@@ -19,4 +19,4 @@ feed = Atom::Feed.new do |f|
     end
 end
 
-#puts feed.to_xml
+File.open('hn-feed.atom', 'w') {|f| f.write(feed.to_xml) }
