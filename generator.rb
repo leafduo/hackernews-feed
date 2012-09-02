@@ -10,7 +10,7 @@ feed = Atom::Feed.new do |f|
     f.id = "leafduo.com"
     RubyHackernews::Entry.all.each do |post|
         f.entries << Atom::Entry.new do |e|
-            e.title = post.link.title
+            e.title = post.link.title + ' (' + post.voting.score.to_s + ')'
             e.links << Atom::Link.new(:href => post.link.href)
             e.id = post.link.href
             #e.updated = post.time # FIXME: Due to a bug in ruby-hackernews, this can crash.
