@@ -24,14 +24,13 @@ atom.feed "xmlns" => "http://www.w3.org/2005/Atom" do
             begin
                 original_content = open(post.link.href).read
                 content = Readability::Document.new(original_content,
-                                                    :tags => %w[div p img a],
-                                                    :attributes => %w[src href],
+                                                    :tags => %w[div p img a], # These tags will be reserved
+                                                    :attributes => %w[src href], # These attributes will be reserved
                                                     :remove_empty_nodes => false).content
                 atom.content content, :type => "html"
             rescue
                 atom.content = ''
             end
-            #e.summary = "Some text."
         end
     end
 end
