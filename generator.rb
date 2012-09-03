@@ -23,7 +23,11 @@ atom.feed "xmlns" => "http://www.w3.org/2005/Atom" do
             #e.updated = post.time # FIXME: Due to a bug in ruby-hackernews, this can crash.
             begin
                 original_content = open(post.link.href).read
-                atom.content Readability::Document.new(original_content).content, :type => "html"
+                content = Readability::Document.new(original_content,
+                                                    :tags => %w[div p img a],
+                                                    :attributes => %w[src href],
+                                                    :remove_empty_nodes => false).content
+                atom.content content, :type => "html"
             rescue
                 atom.content = ''
             end
