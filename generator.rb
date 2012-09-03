@@ -1,5 +1,4 @@
 require 'builder'
-require 'feedzirra'
 require 'ruby-hackernews'
 require 'readability'
 require 'open-uri'
