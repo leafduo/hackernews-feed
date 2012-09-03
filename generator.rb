@@ -13,6 +13,7 @@ atom.feed "xmlns" => "http://www.w3.org/2005/Atom" do
     atom.authors 'Customized by leafduo.com'
     atom.id "leafduo.com"
     RubyHackernews::Entry.all.each do |post|
+        next if post.voting.score < 50 rescue "No score"
         atom.entry do
             title = post.link.title + ' (' + post.voting.score.to_s + ')'
             atom.title title
