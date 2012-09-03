@@ -1,31 +1,32 @@
-require 'atom'
+require 'builder'
 require 'feedzirra'
 require 'ruby-hackernews'
 require 'readability'
 require 'open-uri'
 
-feed = Atom::Feed.new do |f|
-    f.title = "Hacker News"
-    f.links << Atom::Link.new(:href => "http://news.ycombinator.com/")
-    f.updated = Time.now
-    f.authors << Atom::Person.new(:name => 'Customized by leafduo.com')
-    f.id = "leafduo.com"
+atom = Builder::XmlMarkup.new(:target => File.open('hn-feed.atom', 'w'), :indent => 2)
+atom.instruct!
+atom.feed "xmlns" => "http://www.w3.org/2005/Atom" do
+    atom.title "Hacker News", :type => "text"
+    atom.link :rel => "self", :href => "http://news.ycombinator.com/"
+    atom.updated Time.now.utc.iso8601(0)
+    atom.authors 'Customized by leafduo.com'
+    atom.id "leafduo.com"
     RubyHackernews::Entry.all.each do |post|
-        f.entries << Atom::Entry.new do |e|
-            e.title = post.link.title + ' (' + post.voting.score.to_s + ')'
-            puts e.title
-            e.links << Atom::Link.new(:href => post.link.href)
-            e.id = post.link.href
+        atom.entry do
+            title = post.link.title + ' (' + post.voting.score.to_s + ')'
+            atom.title title
+            puts title
+            atom.link :href => post.link.href
+            atom.id post.link.href
             #e.updated = post.time # FIXME: Due to a bug in ruby-hackernews, this can crash.
             begin
                 original_content = open(post.link.href).read
-                e.content = Readability::Document.new(original_content).content
+                atom.content Readability::Document.new(original_content).content, :type => "html"
             rescue
-                e.content = ''
+                atom.content = ''
             end
             #e.summary = "Some text."
         end
     end
 end
-
-File.open('hn-feed.atom', 'w') {|f| f.write(feed.to_xml) }
