@@ -2,7 +2,11 @@ require 'builder'
 require 'ruby-hackernews'
 require 'readability'
 require 'open-uri'
+require 'Logger'
 
+log = Logger.new(STDERR.tty? ? STDERR: '/dev/null')
+
+log.info "Creating new feed"
 atom = Builder::XmlMarkup.new(:target => File.open('hn-feed.atom', 'w'), :indent => 2)
 atom.instruct!
 atom.feed "xmlns" => "http://www.w3.org/2005/Atom" do
@@ -16,7 +20,7 @@ atom.feed "xmlns" => "http://www.w3.org/2005/Atom" do
         atom.entry do
             title = post.link.title + ' (' + post.voting.score.to_s + ')'
             atom.title title
-            puts title
+            log.info title
             atom.link :href => post.link.href
             atom.id post.link.href
             #e.updated = post.time # FIXME: Due to a bug in ruby-hackernews, this can crash.
