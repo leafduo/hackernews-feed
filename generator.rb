@@ -2,7 +2,7 @@ require 'builder'
 require 'ruby-hackernews'
 require 'readability'
 require 'open-uri'
-require 'Logger'
+require 'logger'
 
 log = Logger.new(STDERR.tty? ? STDERR: '/dev/null')
 
