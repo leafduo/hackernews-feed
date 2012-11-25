@@ -21,7 +21,11 @@ atom.feed "xmlns" => "http://www.w3.org/2005/Atom" do
             title = post.link.title + ' (' + post.voting.score.to_s + ')'
             atom.title title
             log.info title
-            atom.link :href => post.link.href
+            if post.link.href.match(/^http/)
+                atom.link :href => post.link.href
+            else
+                atom.link :href => 'http://news.ycombinator.com/' + post.link.href
+            end
             atom.id post.link.href
             #e.updated = post.time # FIXME: Due to a bug in ruby-hackernews, this can crash.
             begin
