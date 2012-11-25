@@ -17,7 +17,7 @@
 #   runner "AnotherModel.prune_old_records"
 # end
 
-every 29.minutes do
+every 14.minutes do
     rake 'default'
 end
 
