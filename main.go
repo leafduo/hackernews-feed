@@ -126,13 +126,21 @@ func generateFeedItem(ctx context.Context, item hackernews.Item) (feeds.Item, er
 			WithField("item", item).
 			Errorf("Redability failed.")
 	}
+
+	var link string
+	if len(item.URL) > 0 {
+		link = item.URL
+	} else {
+		link = fmt.Sprintf("https://news.ycombinator.com/item?id=%d", item.ID)
+	}
 	feedItem := feeds.Item{
 		Title:   fmt.Sprintf("%s (%d)", item.Title, item.Score),
 		Content: article.RawContent,
 		Author:  &feeds.Author{Name: article.Meta.Author},
-		Link:    &feeds.Link{Href: item.URL},
+		Link:    &feeds.Link{Href: link},
 		Id:      item.URL, // For compatability.
 		Created: time.Unix(item.Time, 0),
+		Updated: time.Now(),
 	}
 	return feedItem, nil
 }
