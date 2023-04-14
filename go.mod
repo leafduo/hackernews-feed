@@ -1,5 +1,7 @@
 module hackernews-feed
 
+go 1.20
+
 require (
 	github.com/RadhiFadlillah/go-readability v0.0.0-20180803130947-13aa531ebcea
 	github.com/gorilla/feeds v1.1.0
@@ -27,5 +29,5 @@ require (
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/term v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
-	gopkg.in/yaml.v2 v2.2.2 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
