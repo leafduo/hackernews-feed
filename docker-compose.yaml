@@ -1,0 +1,9 @@
+version: '3'
+services:
+  hackernews-feed:
+#    build: .
+    image: ghcr.io/leafduo/hackernews-feed:main
+    volumes:
+      - /tmp/hackernews-feed:/tmp/hackernews-feed
+    environment:
+      - HN_FEED_OUTPUT_DIR=/tmp/hackernews-feed/
