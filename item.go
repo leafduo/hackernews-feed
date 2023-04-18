@@ -1,4 +1,4 @@
-package hackernews
+package main
 
 // Item represents a hacker new item, such as story, job, poll...
 type Item struct {

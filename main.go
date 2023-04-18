@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"hackernews-feed/hackernews"
 	"net/url"
 	"os"
 	"path"
@@ -36,10 +35,10 @@ func main() {
 func doWork() {
 	logrus.Infof("Start to generate hackernews feed")
 	ctx := context.Background()
-	itemChannel := make(chan hackernews.Item)
+	itemChannel := make(chan Item)
 	go downloadItems(ctx, itemChannel)
 
-	items := make([]hackernews.Item, 0)
+	items := make([]Item, 0)
 	for item := range itemChannel {
 		logrus.WithFields(logrus.Fields{
 			"Title": item.Title,
@@ -72,8 +71,8 @@ func doWork() {
 	fmt.Fprintf(updatedTimestmapFile, "%v", time.Now())
 }
 
-func downloadItems(ctx context.Context, itemChannel chan hackernews.Item) {
-	api := hackernews.NewHackerNewsAPI()
+func downloadItems(ctx context.Context, itemChannel chan Item) {
+	api := NewHackerNewsAPI()
 	storyIDs, err := api.ListTopStories(ctx)
 	if err != nil {
 		panic(err)
@@ -104,8 +103,8 @@ func downloadItems(ctx context.Context, itemChannel chan hackernews.Item) {
 	close(itemChannel)
 }
 
-func filterScoreAbove(items []hackernews.Item, threshold int) []hackernews.Item {
-	filteredItems := make([]hackernews.Item, 0)
+func filterScoreAbove(items []Item, threshold int) []Item {
+	filteredItems := make([]Item, 0)
 	for _, item := range items {
 		if item.Score >= threshold {
 			filteredItems = append(filteredItems, item)
@@ -115,7 +114,7 @@ func filterScoreAbove(items []hackernews.Item, threshold int) []hackernews.Item 
 	return filteredItems
 }
 
-func generateFeedItem(ctx context.Context, item hackernews.Item) (feeds.Item, error) {
+func generateFeedItem(ctx context.Context, item Item) (feeds.Item, error) {
 	parsedURL, _ := url.Parse(item.URL)
 	article, err := readability.FromURL(parsedURL, timeout) // WTF? Doesn't support context?
 	if err != nil {
@@ -145,12 +144,12 @@ func generateFeedItem(ctx context.Context, item hackernews.Item) (feeds.Item, er
 	return feedItem, nil
 }
 
-func generateFeed(ctx context.Context, items []hackernews.Item) (feeds.Feed, error) {
+func generateFeed(ctx context.Context, items []Item) (feeds.Feed, error) {
 	feedItemMap := make(map[int64]feeds.Item, 0)
 	lock := sync.Mutex{}
 
 	wg := sync.WaitGroup{}
-	tasks := make(chan hackernews.Item)
+	tasks := make(chan Item)
 	for worker := 0; worker < concurrency; worker++ {
 		wg.Add(1)
 		go func() {
