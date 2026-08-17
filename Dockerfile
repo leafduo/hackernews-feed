@@ -7,7 +7,7 @@ RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/hackernews-feed .
 
-FROM alpine:3.23
+FROM alpine:3.24
 COPY --from=build /out/hackernews-feed /usr/local/bin/hackernews-feed
 
 ENTRYPOINT ["/usr/local/bin/hackernews-feed"]
