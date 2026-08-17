@@ -1,14 +1,13 @@
-FROM golang:1.20-alpine3.17 AS build
+FROM golang:1.26.6-alpine AS build
 
-ENV GOPROXY=https://goproxy.cn,direct
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
 
-RUN mkdir /hackernews-feed
-COPY . /hackernews-feed
-WORKDIR /hackernews-feed
+COPY . .
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/hackernews-feed .
 
-RUN go build -o hackernews-feed .
+FROM alpine:3.23
+COPY --from=build /out/hackernews-feed /usr/local/bin/hackernews-feed
 
-FROM alpine:3.17
-COPY --from=build /hackernews-feed/hackernews-feed /hackernews-feed/hackernews-feed
-
-CMD ["/hackernews-feed/hackernews-feed"]
+ENTRYPOINT ["/usr/local/bin/hackernews-feed"]

@@ -1,8 +1,7 @@
-version: '3'
 services:
   hackernews-feed:
-#    build: .
-    image: ghcr.io/leafduo/hackernews-feed:main
+    image: ghcr.io/leafduo/hackernews-feed:latest
+    restart: unless-stopped
     volumes:
       - /tmp/hackernews-feed:/tmp/hackernews-feed
     environment:

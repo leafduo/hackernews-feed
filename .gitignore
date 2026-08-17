@@ -1,2 +1,12 @@
-hn-feed.atom
-last_updated.txt
+# macOS metadata
+.DS_Store
+
+# Local build output
+/hackernews-feed
+
+# Generated feed output
+/hn-feed.atom
+/last_updated.txt
+
+# Test artifacts
+/coverage.out
